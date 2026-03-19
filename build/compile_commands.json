@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/main.cpp.o -c /home/northwind/satori_client/main.cpp",
+  "file": "/home/northwind/satori_client/main.cpp",
+  "output": "CMakeFiles/Rin.dir/main.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/bot.cpp.o -c /home/northwind/satori_client/bot.cpp",
+  "file": "/home/northwind/satori_client/bot.cpp",
+  "output": "CMakeFiles/Rin.dir/bot.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/Satori/Satori.cpp.o -c /home/northwind/satori_client/Satori/Satori.cpp",
+  "file": "/home/northwind/satori_client/Satori/Satori.cpp",
+  "output": "CMakeFiles/Rin.dir/Satori/Satori.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o -c /home/northwind/satori_client/httpapi/MessageApi.cpp",
+  "file": "/home/northwind/satori_client/httpapi/MessageApi.cpp",
+  "output": "CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o -c /home/northwind/satori_client/LLMClient/LLMClient.cpp",
+  "file": "/home/northwind/satori_client/LLMClient/LLMClient.cpp",
+  "output": "CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o"
+}
+]
