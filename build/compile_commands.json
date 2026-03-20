@@ -1,32 +1,86 @@
 [
 {
   "directory": "/home/northwind/satori_client/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/main.cpp.o -c /home/northwind/satori_client/main.cpp",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/main.cpp.o -c /home/northwind/satori_client/main.cpp",
   "file": "/home/northwind/satori_client/main.cpp",
   "output": "CMakeFiles/Rin.dir/main.cpp.o"
 },
 {
   "directory": "/home/northwind/satori_client/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/bot.cpp.o -c /home/northwind/satori_client/bot.cpp",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/bot.cpp.o -c /home/northwind/satori_client/bot.cpp",
   "file": "/home/northwind/satori_client/bot.cpp",
   "output": "CMakeFiles/Rin.dir/bot.cpp.o"
 },
 {
   "directory": "/home/northwind/satori_client/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/Satori/Satori.cpp.o -c /home/northwind/satori_client/Satori/Satori.cpp",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/Satori/Satori.cpp.o -c /home/northwind/satori_client/Satori/Satori.cpp",
   "file": "/home/northwind/satori_client/Satori/Satori.cpp",
   "output": "CMakeFiles/Rin.dir/Satori/Satori.cpp.o"
 },
 {
   "directory": "/home/northwind/satori_client/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o -c /home/northwind/satori_client/httpapi/MessageApi.cpp",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o -c /home/northwind/satori_client/httpapi/MessageApi.cpp",
   "file": "/home/northwind/satori_client/httpapi/MessageApi.cpp",
   "output": "CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o"
 },
 {
   "directory": "/home/northwind/satori_client/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o -c /home/northwind/satori_client/LLMClient/LLMClient.cpp",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o -c /home/northwind/satori_client/LLMClient/LLMClient.cpp",
   "file": "/home/northwind/satori_client/LLMClient/LLMClient.cpp",
   "output": "CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/CowData.cpp.o -c /home/northwind/satori_client/subprocess/CowData.cpp",
+  "file": "/home/northwind/satori_client/subprocess/CowData.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/CowData.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/PipeVar.cpp.o -c /home/northwind/satori_client/subprocess/PipeVar.cpp",
+  "file": "/home/northwind/satori_client/subprocess/PipeVar.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/PipeVar.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/ProcessBuilder.cpp.o -c /home/northwind/satori_client/subprocess/ProcessBuilder.cpp",
+  "file": "/home/northwind/satori_client/subprocess/ProcessBuilder.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/ProcessBuilder.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_posix.cpp.o -c /home/northwind/satori_client/subprocess/ProcessBuilder_posix.cpp",
+  "file": "/home/northwind/satori_client/subprocess/ProcessBuilder_posix.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/ProcessBuilder_posix.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_windows.cpp.o -c /home/northwind/satori_client/subprocess/ProcessBuilder_windows.cpp",
+  "file": "/home/northwind/satori_client/subprocess/ProcessBuilder_windows.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/ProcessBuilder_windows.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/environ.cpp.o -c /home/northwind/satori_client/subprocess/environ.cpp",
+  "file": "/home/northwind/satori_client/subprocess/environ.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/environ.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/pipe.cpp.o -c /home/northwind/satori_client/subprocess/pipe.cpp",
+  "file": "/home/northwind/satori_client/subprocess/pipe.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/pipe.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/shell_utils.cpp.o -c /home/northwind/satori_client/subprocess/shell_utils.cpp",
+  "file": "/home/northwind/satori_client/subprocess/shell_utils.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/shell_utils.cpp.o"
+},
+{
+  "directory": "/home/northwind/satori_client/build",
+  "command": "/usr/bin/aarch64-linux-gnu-g++ -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket -g -std=gnu++20 -o CMakeFiles/Rin.dir/subprocess/utf8_to_utf16.cpp.o -c /home/northwind/satori_client/subprocess/utf8_to_utf16.cpp",
+  "file": "/home/northwind/satori_client/subprocess/utf8_to_utf16.cpp",
+  "output": "CMakeFiles/Rin.dir/subprocess/utf8_to_utf16.cpp.o"
 }
 ]

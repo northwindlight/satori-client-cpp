@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <functional>
 #include <ixwebsocket/IXHttpClient.h>
+#include "../subprocess.hpp"
 
 class LLMClient
 {
@@ -20,6 +21,7 @@ private:
     std::unique_ptr<std::jthread> worker = nullptr;
     std::mutex mtx;
     std::condition_variable cv;
+    std::vector<std::string> tools;
     bool running = false;
     unsigned timeout = 300;
     void workerThread();
@@ -39,4 +41,7 @@ public:
     void sendLLM(const std::string& content, std::function<void(const std::string& response)> cb);
     void stop();
     void setCallback(std::function<void(const std::string& response)> cb);
+    void setTools(const std::vector<std::string>& tools);
+    std::string useTool(const std::string& tool, const std::string& args);
+    void useToolAsync(std::vector<std::string> cmd, std::function<void(subprocess::CompletedProcess)> callback);
 };
