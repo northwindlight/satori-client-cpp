@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/Rin.dir/link.d CMakeFiles/Rin.dir/main.cpp.o CMakeFiles/Rin.dir/bot.cpp.o -o Rin  -Wl,-rpath,/usr/local/lib /usr/local/lib/libixwebsocket.so.11.4.6
