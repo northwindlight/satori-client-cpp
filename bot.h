@@ -29,7 +29,6 @@ private:
     void run();
     void pingLoop();
     void exceptionHandling();
-
     void init();
 public:
     enum Opcode
@@ -42,7 +41,6 @@ public:
     };
     Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID);
     Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID, LLMClient& client);
-    //~Bot();
     LLMClient* client = nullptr;
     void addWSCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);
     void addOnMessageCallback(std::function<void(const satori::Event&)> callback);

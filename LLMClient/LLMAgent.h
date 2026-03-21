@@ -10,7 +10,7 @@ class LLMAgent
 private:
     LLMClient& llm;
     std::string systemPrompt;
-
+    std::vector<std::string> registryTools;
     struct ToolCall {
         std::string tool;
         std::string args;
@@ -26,6 +26,6 @@ private:
 
 public:
     LLMAgent(LLMClient& llm, const std::string& systemPrompt);
-
+    void toolRegistry(std::vector<std::string> tools);
     void ask(const std::string& userInput, std::function<void(const std::string& reply)> cb);
 };

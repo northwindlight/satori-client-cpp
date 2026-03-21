@@ -1,8 +1,10 @@
 #include "LLMAgent.h"
+#include "LLMClient/LLMClient.h"
 #include "nlohmann/json.hpp"
 #include "subprocess.hpp"
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm), systemPrompt(systemPrompt) {}
 
@@ -46,24 +48,32 @@ bool LLMAgent::parseToolCall(const std::string& reply, ToolCall& out)
 
 void LLMAgent::runToolAsync(const ToolCall& tc, std::function<void(const std::string&)> cb) {
     // 把 args 按空格拆成 argv
-    std::vector<std::string> cmd = {tc.tool};
-    std::istringstream iss(tc.args);
-    std::string token;
-    while (iss >> token) cmd.push_back(token);
-
-    std::thread([cmd = std::move(cmd), cb = std::move(cb)]() 
+    for (auto &tool : registryTools)
     {
-        try {
-            auto result = subprocess::run(cmd, {
-                .cout = subprocess::PipeOption::pipe,
-                .cerr = subprocess::PipeOption::pipe
-            });
-            cb(result.cout);
-        } catch (const std::exception& e) {
-            std::cerr << "工具执行错误: " << e.what() << std::endl;
-            cb("[工具执行失败]");
+        if (tool == tc.tool) 
+        {
+            std::vector<std::string> cmd = {tc.tool};
+            std::istringstream iss(tc.args);
+            std::string token;
+            while (iss >> token) cmd.push_back(token);
+            std::thread([cmd = std::move(cmd), cb = std::move(cb)]() 
+            {
+                try {
+                    auto result = subprocess::run(cmd, {
+                        .cout = subprocess::PipeOption::pipe,
+                        .cerr = subprocess::PipeOption::pipe
+                    });
+                    cb(result.cout);
+                } catch (const std::exception& e) {
+                    std::cerr << "工具执行错误: " << e.what() << std::endl;
+                    cb("[工具执行失败]");
+                }
+            }).detach();
+            return;
         }
-    }).detach();
+    }
+    cb("[该工具不在白名单]");
+    
 }
 
 std::vector<LLMClient::Message> LLMAgent::buildMessages(
@@ -80,4 +90,9 @@ std::vector<LLMClient::Message> LLMAgent::buildMessages(
         messages.push_back({"user", "工具执行结果：\n" + toolOutput});
     }
     return messages;
+}
+
+void LLMAgent::toolRegistry(std::vector<std::string> tools)
+{
+    registryTools.insert(registryTools.end(), tools.begin(), tools.end());
 }
