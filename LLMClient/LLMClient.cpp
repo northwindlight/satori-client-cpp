@@ -90,6 +90,7 @@ void LLMClient::workerThread() {
         catch (const std::exception& e) 
         {
             std::cerr << "LLM 响应解析错误: " << e.what() << std::endl;
+            std::cerr << response->body << std::endl;
         }
     }
 }

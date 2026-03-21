@@ -1,6 +1,7 @@
 #include "MessageApi.h"
 #include "../bot.h"
 #include "../nlohmann/json.hpp"
+#include <iostream>
 
 
 MessageApi::MessageApi(Bot* b) : bot(b) {}
@@ -9,6 +10,7 @@ std::vector<satori::Message> MessageApi::create(const std::string& channel_id, c
     nlohmann::json body;
     body["channel_id"] = channel_id;
     body["content"] = content;
+    //std::cout << body.dump() << std::endl;
     std::optional<std::string> response = bot->httpPost(bot->getHttpAddr() + "/message.create", body.dump());
     if (response.has_value())
     {

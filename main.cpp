@@ -28,10 +28,16 @@ int main()
         "{\"tool\":\"fastfetch\",\"args\":\"--logo none --structure <XX>\"}\n\n"
         "structure选择：\n"
         "OS(操作系统/发行版) | CPU(处理器) | Memory(内存) | Disk(磁盘) | Host(主机名) | Uptime(运行时间)\n\n"
+        "【御神签抽签】\n"
+        "当用户请求抽签、求签、问运势等相关请求时，立即输出以下JSON，不要有任何多余的话：\n"
+        "{\"tool\":\"fortune\",\"args\":\"\"}"
+        "标记为稀有的是不同于一般吉或凶的特殊标签，祝福用户"
+        "解释抽签结果时，简单即可，几个字祝福或者安慰就行，不要联想或者引申"
         "【日常对话】\n"
         "非系统信息的闲聊，以小小北风身份友好回复，不输出JSON。\n"
+        
     );
-    agent.toolRegistry({"fastfetch"});
+    agent.toolRegistry({"fastfetch", "fortune"});
 
     //satori bot客户端，参数分别为satori服务器地址，token，平台名称，平台账号
     Bot rin("127.0.0.1:5600", "TOUHOUPROJECTFOREVER", "QQ", "3824302087");
@@ -50,10 +56,24 @@ int main()
             return at.id.has_value() && at.id.value() == rin.getUserID();
         });
 
-        if (event.channel->id.find("private") != std::string::npos && it != elements.ats.end()) {
-            agent.ask(content, [&rin, channelId](const std::string& reply) 
+        //如果没有调用工具toolName和toolOutput都是空字符串
+        if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
+            agent.ask(content, [&rin, channelId](const std::string& reply, const std::string& toolName, const std::string& toolOutput) 
             {
-                rin.message.create(channelId, reply);
+                std::string finalreply = reply;
+                if (toolName == "fortune") 
+                {
+                    std::string number;
+                    //std::cout << toolOutput << std::endl;
+                    size_t first = toolOutput.find(' '); 
+                    size_t second = toolOutput.find(' ', first + 1);
+                    if (first != std::string::npos && second != std::string::npos) {
+                        number = toolOutput.substr(first + 1, second - first - 1);
+                    }
+                    finalreply = reply + "<img src=\"file:///opt/东方幻存神签/" + number + ".png\">";
+                    //std::cout << finalreply << std::endl;
+                }
+                rin.message.create(channelId, finalreply);
             });
         }
 

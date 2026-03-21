@@ -10,7 +10,7 @@
 
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm), systemPrompt(systemPrompt) {}
 
-void LLMAgent::ask(const std::string& userInput, std::function<void(const std::string& reply)> cb) 
+void LLMAgent::ask(const std::string& userInput, std::function<void(const std::string& reply, const std::string& toolName, const std::string& toolOutput)> cb) 
 {
     auto messages = buildMessages(userInput);
     llm.chat(std::move(messages), [this, userInput, cb](const std::string& reply) 
@@ -18,19 +18,19 @@ void LLMAgent::ask(const std::string& userInput, std::function<void(const std::s
         ToolCall tc;
         if (parseToolCall(reply, tc)) 
         {
-            runToolAsync(tc, [this, userInput, assistantReply = reply, cb](const std::string& toolOutput) 
+            runToolAsync(tc, [this, userInput, assistantReply = reply, toolName = tc.tool, cb](const std::string& toolOutput) 
             {
                 // 把工具结果拼回上下文，二次请求
                 auto messages2 = buildMessages(userInput, assistantReply, toolOutput);
-                llm.chat(std::move(messages2), [cb](const std::string& finalReply) 
+                llm.chat(std::move(messages2), [toolName, cb, toolOutput](const std::string& finalReply) 
                 {
-                    cb(finalReply);
+                    cb(finalReply, toolName, toolOutput);
                 });
             });
         } 
         else 
         {
-            cb(reply);
+            cb(reply, "", "");
         }
     });
 }
@@ -56,11 +56,12 @@ void LLMAgent::runToolAsync(const ToolCall& tc, std::function<void(const std::st
         cb("[该工具不在白名单]");
         return;
     }
+
     std::vector<std::string> cmd = {tc.tool};
     std::istringstream iss(tc.args);
     std::string token;
     while (iss >> token) cmd.push_back(token);
-    std::thread([cmd = std::move(cmd), cb = std::move(cb)]() 
+    std::thread([cmd = std::move(cmd), cb = std::move(cb), this, tc]() 
     {
         try {
             auto result = subprocess::run(cmd, {
