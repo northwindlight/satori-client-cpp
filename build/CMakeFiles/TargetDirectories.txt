@@ -1,3 +1,0 @@
-/home/northwind/satori_client/build/CMakeFiles/Rin.dir
-/home/northwind/satori_client/build/CMakeFiles/edit_cache.dir
-/home/northwind/satori_client/build/CMakeFiles/rebuild_cache.dir
