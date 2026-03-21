@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
-#include <ranges>
+
 
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm), systemPrompt(systemPrompt) {}
 
