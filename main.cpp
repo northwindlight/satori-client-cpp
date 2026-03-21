@@ -11,7 +11,7 @@ int main()
     //如果需要llm功能，需要创建llmclient对象，参数为url, api_key, model
     LLMClient llm(
         "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-        "sk-xxxx",
+        "sk-xxxxx",
         "qwen3-14b"
     );
 
