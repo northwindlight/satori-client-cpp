@@ -1,5 +1,6 @@
 #include <ixwebsocket/IXNetSystem.h>
 #include <iostream>
+#include "Satori/Satori.h"
 #include "bot.h"
 #include "LLMClient/LLMClient.h"
 #include "LLMClient/LLMAgent.h"
@@ -38,16 +39,23 @@ int main()
     rin.addOnMessageCallback([&rin, &agent](const satori::Event& event)
     {
         if (!event.message.has_value() || !event.channel.has_value()) return;
-        //if (event.channel->id.find("private") == std::string::npos) return;
 
         const std::string& channelId = event.channel->id;
         const std::string& content   = event.message->content;
         std::cout << "新消息 [" << channelId << "]: " << content << std::endl;
-
-        agent.ask(content, [&rin, channelId](const std::string& reply) 
-        {
-            rin.message.create(channelId, reply);
+        
+        satori::Elements elements = satori::parseContent(content);
+        auto it = std::ranges::find_if(elements.ats, [&](const auto& at) {
+            return at.id.has_value() && at.id.value() == rin.getUserID();
         });
+
+        if (event.channel->id.find("private") != std::string::npos && it != elements.ats.end()) {
+            agent.ask(content, [&rin, channelId](const std::string& reply) 
+            {
+                rin.message.create(channelId, reply);
+            });
+        }
+
     });
 
     rin.start();

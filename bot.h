@@ -52,6 +52,6 @@ public:
     void identify(const std::string& token);
     void start();
     void wsSend(const std::string& message);
-
+    std::string getUserID();
     MessageApi message{this};
 };

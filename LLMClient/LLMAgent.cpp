@@ -1,10 +1,12 @@
 #include "LLMAgent.h"
 #include "LLMClient/LLMClient.h"
-#include "nlohmann/json.hpp"
 #include "subprocess.hpp"
+#include "nlohmann/json.hpp"
+#include <algorithm>
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <ranges>
 
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm), systemPrompt(systemPrompt) {}
 
@@ -48,31 +50,29 @@ bool LLMAgent::parseToolCall(const std::string& reply, ToolCall& out)
 
 void LLMAgent::runToolAsync(const ToolCall& tc, std::function<void(const std::string&)> cb) {
     // 把 args 按空格拆成 argv
-    for (auto &tool : registryTools)
+    auto it = std::ranges::find(registryTools, tc.tool);
+    if (it == registryTools.end()) 
     {
-        if (tool == tc.tool) 
-        {
-            std::vector<std::string> cmd = {tc.tool};
-            std::istringstream iss(tc.args);
-            std::string token;
-            while (iss >> token) cmd.push_back(token);
-            std::thread([cmd = std::move(cmd), cb = std::move(cb)]() 
-            {
-                try {
-                    auto result = subprocess::run(cmd, {
-                        .cout = subprocess::PipeOption::pipe,
-                        .cerr = subprocess::PipeOption::pipe
-                    });
-                    cb(result.cout);
-                } catch (const std::exception& e) {
-                    std::cerr << "工具执行错误: " << e.what() << std::endl;
-                    cb("[工具执行失败]");
-                }
-            }).detach();
-            return;
-        }
+        cb("[该工具不在白名单]");
+        return;
     }
-    cb("[该工具不在白名单]");
+    std::vector<std::string> cmd = {tc.tool};
+    std::istringstream iss(tc.args);
+    std::string token;
+    while (iss >> token) cmd.push_back(token);
+    std::thread([cmd = std::move(cmd), cb = std::move(cb)]() 
+    {
+        try {
+            auto result = subprocess::run(cmd, {
+                .cout = subprocess::PipeOption::pipe,
+                .cerr = subprocess::PipeOption::pipe
+            });
+            cb(result.cout);
+        } catch (const std::exception& e) {
+            std::cerr << "工具执行错误: " << e.what() << std::endl;
+            cb("[工具执行失败]");
+        }
+    }).detach();
     
 }
 

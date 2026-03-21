@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     httpapi/MessageApi.cpp
     LLMClient/LLMClient.cpp
     LLMClient/LLMAgent.cpp
+    tinyxml2/tinyxml2.cpp
     ${SUBPROCESS_SOURCES}
 )
 

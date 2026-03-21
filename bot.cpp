@@ -155,3 +155,8 @@ std::optional<std::string> Bot::httpPost(const std::string& url, const std::stri
     }
     return response->body;
 }
+
+std::string Bot::getUserID() 
+{
+    return userID;
+}

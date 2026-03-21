@@ -86,7 +86,8 @@ void LLMClient::workerThread() {
             nlohmann::json jsonResponse = nlohmann::json::parse(response->body);
             std::string reply = jsonResponse["choices"][0]["message"]["content"].get<std::string>();
             req.callback(reply);
-        } catch (const std::exception& e) 
+        } 
+        catch (const std::exception& e) 
         {
             std::cerr << "LLM 响应解析错误: " << e.what() << std::endl;
         }

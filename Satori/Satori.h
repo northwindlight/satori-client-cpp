@@ -125,4 +125,19 @@ namespace satori
         std::optional<nlohmann::json> referrer; // can be any type
     };
     void from_json(const nlohmann::json& j, Event& e);
-}
+
+    struct At
+    {
+        std::optional<std::string> id;
+        std::optional<std::string> name;
+        std::optional<std::string> role;
+        std::optional<std::string> type;
+    };
+
+    struct Elements 
+    {
+        std::string plainText;
+        std::vector<At> ats;
+    };
+    Elements parseContent(const std::string& content);
+} 

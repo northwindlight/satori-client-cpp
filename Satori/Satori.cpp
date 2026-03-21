@@ -1,4 +1,5 @@
 #include "Satori.h"
+#include "../tinyxml2/tinyxml2.h"
  
 namespace satori
 {
@@ -7,6 +8,10 @@ namespace satori
     {
         if (j.contains(key) && !j[key].is_null())
             out = j[key].get<T>();
+    }
+
+    static void tryAttr(tinyxml2::XMLElement* elem, const char* name, std::optional<std::string>& out) {
+        if (auto v = elem->Attribute(name)) out = v;
     }
  
     void from_json(const nlohmann::json& j, User& u)
@@ -113,5 +118,33 @@ namespace satori
         opt(j, "user",     e.user);
         if (j.contains("referrer") && !j["referrer"].is_null())
             e.referrer = j["referrer"];
+    }
+
+    Elements parseContent(const std::string& content) {
+        tinyxml2::XMLDocument doc;
+        std::string xml = "<root>" + content + "</root>";
+        if (doc.Parse(xml.c_str()) != tinyxml2::XML_SUCCESS)
+            return {content, {}};
+
+        Elements result;
+        auto root = doc.FirstChildElement("root");
+
+        for (auto node = root->FirstChild(); node; node = node->NextSibling()) {
+            if (auto text = node->ToText()) {
+                result.plainText += text->Value();
+            } else if (auto elem = node->ToElement()) {
+                std::string_view tag = elem->Name();
+                if (tag == "at") {
+                    At at;
+                    tryAttr(elem, "id",   at.id);
+                    tryAttr(elem, "name", at.name);
+                    tryAttr(elem, "role", at.role);
+                    tryAttr(elem, "type", at.type);
+                    result.ats.push_back(std::move(at));
+                }
+                // 后续加 img / quote 也是三四行
+            }
+        }
+        return result;
     }
 }
