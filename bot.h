@@ -21,6 +21,7 @@ private:
     std::string baseAddr;
     std::string token;
     std::string userID;
+    std::string platform;
     std::unordered_map<ix::WebSocketMessageType, std::vector<std::function<void(const ix::WebSocketMessagePtr&)>>> callbacksByType;
 
     bool running = false;
@@ -39,8 +40,8 @@ public:
         IDENTIFY,
         READY
     };
-    Bot(const std::string& baseAddr, const std::string& token, const std::string& userID);
-    Bot(const std::string& baseAddr, const std::string& token, const std::string& userID, LLMClient& client);
+    Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID);
+    Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID, LLMClient& client);
     //~Bot();
     LLMClient* client = nullptr;
     void addWSCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);

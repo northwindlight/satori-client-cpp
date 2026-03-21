@@ -89,6 +89,14 @@ build CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o: CXX_COMPILER__Rin_unscanned_
   OBJECT_DIR = CMakeFiles/Rin.dir
   OBJECT_FILE_DIR = CMakeFiles/Rin.dir/LLMClient
 
+build CMakeFiles/Rin.dir/LLMClient/LLMAgent.cpp.o: CXX_COMPILER__Rin_unscanned_Debug /home/northwind/satori_client/LLMClient/LLMAgent.cpp || cmake_object_order_depends_target_Rin
+  DEFINES = -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB
+  DEP_FILE = CMakeFiles/Rin.dir/LLMClient/LLMAgent.cpp.o.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I/home/northwind/satori_client -isystem /usr/local/include/ixwebsocket
+  OBJECT_DIR = CMakeFiles/Rin.dir
+  OBJECT_FILE_DIR = CMakeFiles/Rin.dir/LLMClient
+
 build CMakeFiles/Rin.dir/subprocess/CowData.cpp.o: CXX_COMPILER__Rin_unscanned_Debug /home/northwind/satori_client/subprocess/CowData.cpp || cmake_object_order_depends_target_Rin
   DEFINES = -DIXWEBSOCKET_USE_OPEN_SSL -DIXWEBSOCKET_USE_TLS -DIXWEBSOCKET_USE_ZLIB
   DEP_FILE = CMakeFiles/Rin.dir/subprocess/CowData.cpp.o.d
@@ -169,7 +177,7 @@ build CMakeFiles/Rin.dir/subprocess/utf8_to_utf16.cpp.o: CXX_COMPILER__Rin_unsca
 #############################################
 # Link the executable Rin
 
-build Rin: CXX_EXECUTABLE_LINKER__Rin_Debug CMakeFiles/Rin.dir/main.cpp.o CMakeFiles/Rin.dir/bot.cpp.o CMakeFiles/Rin.dir/Satori/Satori.cpp.o CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o CMakeFiles/Rin.dir/subprocess/CowData.cpp.o CMakeFiles/Rin.dir/subprocess/PipeVar.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_posix.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_windows.cpp.o CMakeFiles/Rin.dir/subprocess/environ.cpp.o CMakeFiles/Rin.dir/subprocess/pipe.cpp.o CMakeFiles/Rin.dir/subprocess/shell_utils.cpp.o CMakeFiles/Rin.dir/subprocess/utf8_to_utf16.cpp.o | /usr/local/lib/libixwebsocket.so.11.4.6
+build Rin: CXX_EXECUTABLE_LINKER__Rin_Debug CMakeFiles/Rin.dir/main.cpp.o CMakeFiles/Rin.dir/bot.cpp.o CMakeFiles/Rin.dir/Satori/Satori.cpp.o CMakeFiles/Rin.dir/httpapi/MessageApi.cpp.o CMakeFiles/Rin.dir/LLMClient/LLMClient.cpp.o CMakeFiles/Rin.dir/LLMClient/LLMAgent.cpp.o CMakeFiles/Rin.dir/subprocess/CowData.cpp.o CMakeFiles/Rin.dir/subprocess/PipeVar.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_posix.cpp.o CMakeFiles/Rin.dir/subprocess/ProcessBuilder_windows.cpp.o CMakeFiles/Rin.dir/subprocess/environ.cpp.o CMakeFiles/Rin.dir/subprocess/pipe.cpp.o CMakeFiles/Rin.dir/subprocess/shell_utils.cpp.o CMakeFiles/Rin.dir/subprocess/utf8_to_utf16.cpp.o | /usr/local/lib/libixwebsocket.so.11.4.6
   DEP_FILE = CMakeFiles/Rin.dir/link.d
   FLAGS = -g
   LINK_FLAGS = -Wl,--dependency-file=CMakeFiles/Rin.dir/link.d

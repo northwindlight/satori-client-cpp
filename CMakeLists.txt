@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME}
     Satori/Satori.cpp
     httpapi/MessageApi.cpp
     LLMClient/LLMClient.cpp
+    LLMClient/LLMAgent.cpp
     ${SUBPROCESS_SOURCES}
 )
 

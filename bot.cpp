@@ -8,19 +8,19 @@ void Bot::init()
     args->connectTimeout = 5;
     args->transferTimeout = 10;
     headers["Content-Type"] = "application/json";
-    headers["Satori-Platform"] = "QQ";
+    headers["Satori-Platform"] = platform;
     headers["Authorization"] = "Bearer " + token;
     headers["Satori-User-ID"] = userID;
     args->extraHeaders = headers;
     identify(token);
     exceptionHandling();
 }
-Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& userID) : baseAddr(baseAddr), token(token), userID(userID)
+Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID) : baseAddr(baseAddr), token(token), userID(userID), platform(platform)
 {
     init();
 }
 
-Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& userID, LLMClient& client) : Bot(baseAddr, token, userID)
+Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID, LLMClient& client) : Bot(baseAddr, token, platform, userID)
 {
     this->client = &client;
 }
