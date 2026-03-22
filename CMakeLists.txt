@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project("Rin")
+project("satori_client")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,7 +11,7 @@ find_package(ixwebsocket REQUIRED)
 file(GLOB SUBPROCESS_SOURCES "subprocess/*.cpp")
 
 add_executable(${PROJECT_NAME}
-    main.cpp
+    demo.cpp
     bot.cpp
     Satori/Satori.cpp
     httpapi/MessageApi.cpp

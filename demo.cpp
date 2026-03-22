@@ -7,9 +7,11 @@
 
 int main()
 {
+    //这是ix的全局网络系统初始化，如果不是Windows平台可以删除
     ix::initNetSystem();
 
     //如果需要llm功能，需要创建llmclient对象，参数为url, api_key, model
+    //请自己获取api_key
     LLMClient llm(
         "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
         "sk-xxxxx",
@@ -40,6 +42,7 @@ int main()
     agent.toolRegistry({"fastfetch", "fortune"});
 
     //satori bot客户端，参数分别为satori服务器地址，token，平台名称，平台账号
+    //这些由satori服务端sdk提供
     Bot rin("127.0.0.1:5600", "TOUHOUPROJECTFOREVER", "QQ", "3824302087");
     //satori bot消息回调，通过addOnMessageCallback来自行实现bot功能
     rin.addOnMessageCallback([&rin, &agent](const satori::Event& event)
