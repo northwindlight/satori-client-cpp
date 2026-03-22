@@ -40,6 +40,7 @@ int main()
         });
 
         if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
+            //使用shared_ptr保证在回调中的生命周期问题
             auto agent = std::make_shared<LLMAgent>(llm,
                 "你是服务器管理助手，名字叫小小北风。\n\n"
             );
