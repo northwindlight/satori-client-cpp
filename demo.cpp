@@ -40,10 +40,10 @@ int main()
         });
 
         if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
-            LLMAgent agent(llm,
+            auto agent = std::make_shared<LLMAgent>(llm,
                 "你是服务器管理助手，名字叫小小北风。\n\n"
             );
-            agent.ask(content , [&rin, channelId](const std::string& reply) 
+            agent->ask(content , [&rin, channelId](const std::string& reply) 
             {
                 //如果你想调用工具，可以再这里实现自己的调用工具功能
                 //然后再次调用ask来进行下一轮会话

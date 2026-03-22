@@ -1,4 +1,5 @@
 #include "LLMAgent.h"
+
  
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm)
 {
@@ -7,11 +8,17 @@ LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm)
  
 void LLMAgent::ask(const std::string& userInput, std::function<void(const std::string& reply)> cb)
 {
-    history.push_back({"user", userInput});
- 
-    llm.chat(history, [this, cb](const std::string& reply)
     {
-        history.push_back({"assistant", reply});
+        std::lock_guard<std::mutex> lock(historyMtx);
+        history.push_back({"user", userInput});
+    }
+    
+    llm.chat(history, [self = shared_from_this(), cb](const std::string& reply)
+    {
+        {
+            std::lock_guard<std::mutex> lock(self->historyMtx);
+            self->history.push_back({"assistant", reply});
+        }
         cb(reply);
     });
 }

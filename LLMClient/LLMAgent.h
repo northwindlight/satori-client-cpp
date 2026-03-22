@@ -4,12 +4,14 @@
 #include <functional>
 #include <vector>
 #include "LLMClient.h"
+#include <memory>
  
-class LLMAgent
+class LLMAgent : public std::enable_shared_from_this<LLMAgent>
 {
 private:
     LLMClient& llm;
     std::vector<LLMClient::Message> history;
+    std::mutex historyMtx;
  
 public:
     LLMAgent(LLMClient& llm, const std::string& systemPrompt);
