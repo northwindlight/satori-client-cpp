@@ -3,7 +3,7 @@
 #include <string>
 #include <functional>
 #include <vector>
-#include "LLMClient/LLMClient.h"
+#include "LLMClient.h"
  
 class LLMAgent
 {
