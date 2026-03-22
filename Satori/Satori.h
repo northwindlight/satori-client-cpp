@@ -4,8 +4,8 @@
 #include <vector>
 #include "../nlohmann/json.hpp"
 
-namespace satori
-{
+namespace satori{
+
     struct User
     {
         std::string id;
@@ -140,4 +140,5 @@ namespace satori
         std::vector<At> ats;
     };
     Elements parseContent(const std::string& content);
-} 
+
+}
