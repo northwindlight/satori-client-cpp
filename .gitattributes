@@ -1,0 +1,4 @@
+nlohmann/json.hpp  linguist-vendored
+tinyxml2/**        linguist-vendored
+subprocess/**      linguist-vendored
+subprocess.hpp     linguist-vendored
