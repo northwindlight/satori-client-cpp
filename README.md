@@ -72,19 +72,19 @@ int main()
         "qwen3-14b"
     );
 
-    // 工具调用通过 Prompt 约定格式：{"tool": "工具名", "args": "参数"}
-    LLMAgent agent(llm, "你的系统提示词");
-    agent.toolRegistry({"your-tool"}); // 注册工具白名单
 
     Bot bot("127.0.0.1:5600", "YOUR_TOKEN", "QQ", "YOUR_BOT_QQ");
 
-    bot.addOnMessageCallback([&bot, &agent](const satori::Event& event)
+    bot.addOnMessageCallback([&bot, &llm](const satori::Event& event)
     {
         if (!event.message || !event.channel) return;
 
         const std::string& channelId = event.channel->id;
         satori::Elements elems = satori::parseContent(event.message->content);
-
+        //创建agent管理llm上下文
+        LLMAgent agent(llm,
+                "你是服务器管理助手，名字叫小小北风。\n\n"
+        );
         agent.ask(elems.plainText, [&bot, channelId](
             const std::string& reply,
             const std::string& toolName,
@@ -108,7 +108,6 @@ int main()
 | [ixwebsocket](https://github.com/machinezone/IXWebSocket) | WebSocket + HTTP，外部库，需要启用TLS支持 |
 | [nlohmann/json](https://github.com/nlohmann/json) | JSON 解析，已内嵌 |
 | [tinyxml2](https://github.com/leethomason/tinyxml2) | XML 解析，已内嵌 |
-| [subprocess](https://github.com/benman64/subprocess) | 子进程调用（LLMAgent 工具执行），已内嵌 |
 
 ```bash
 # Ubuntu

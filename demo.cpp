@@ -19,7 +19,7 @@ int main()
         "sk-xxxxx",
         "qwen3-14b"
     );
-    
+
     //satori bot客户端，参数分别为satori服务器地址，token，平台名称，平台账号
     //这些由satori服务端sdk提供
     Bot rin("127.0.0.1:5600", "TOUHOUPROJECTFOREVER", "QQ", "3824302087");
@@ -45,6 +45,8 @@ int main()
             );
             agent.ask(content , [&rin, channelId](const std::string& reply) 
             {
+                //如果你想调用工具，可以再这里实现自己的调用工具功能
+                //然后再次调用ask来进行下一轮会话
                 rin.message.create(channelId, reply);
             });
         }
