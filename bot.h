@@ -3,7 +3,6 @@
 #include <ixwebsocket/IXHttpClient.h>
 #include <ixwebsocket/IXWebSocket.h>
 #include "httpapi/MessageApi.h"
-#include "LLMClient/LLMClient.h"
 #include "Satori/Satori.h"
 #include <functional>
 #include <vector>
@@ -29,7 +28,6 @@ private:
     void run();
     void pingLoop();
     void exceptionHandling();
-    void init();
 public:
     enum Opcode
     {
@@ -40,8 +38,6 @@ public:
         READY
     };
     Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID);
-    Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID, LLMClient& client);
-    LLMClient* client = nullptr;
     void addWSCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);
     void addOnMessageCallback(std::function<void(const satori::Event&)> callback);
     std::string getHttpAddr() const { return "http://" + baseAddr + "/v1"; }
@@ -52,6 +48,7 @@ public:
     void identify(const std::string& token);
     void start();
     void wsSend(const std::string& message);
-    std::string getUserID();
     MessageApi message{this};
+    std::string getUserID();
+    ~Bot();
 };

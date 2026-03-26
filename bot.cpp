@@ -1,7 +1,7 @@
 #include "bot.h"
 #include <iostream>
 
-void Bot::init()
+Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID) : baseAddr(baseAddr), token(token), userID(userID), platform(platform)
 {
     webSocket.setUrl("ws://" + baseAddr + "/v1/events");
     args = httpClient.createRequest();
@@ -14,15 +14,6 @@ void Bot::init()
     args->extraHeaders = headers;
     identify(token);
     exceptionHandling();
-}
-Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID) : baseAddr(baseAddr), token(token), userID(userID), platform(platform)
-{
-    init();
-}
-
-Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID, LLMClient& client) : Bot(baseAddr, token, platform, userID)
-{
-    this->client = &client;
 }
 
 void Bot::addWSCallback(ix::WebSocketMessageType type, std::function<void(const ix::WebSocketMessagePtr&)> callback)
@@ -156,7 +147,12 @@ std::optional<std::string> Bot::httpPost(const std::string& url, const std::stri
     return response->body;
 }
 
-std::string Bot::getUserID() 
+std::string Bot::getUserID()
 {
     return userID;
 }
+
+Bot::~Bot(){
+    webSocket.close();
+}
+
