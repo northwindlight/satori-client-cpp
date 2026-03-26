@@ -5,7 +5,7 @@
 
 
 MessageApi::MessageApi(Bot* b) : bot(b) {}
-std::vector<satori::Message> MessageApi::create(const std::string& channel_id, const std::string& content)
+std::vector<satori::event::Message> MessageApi::create(const std::string& channel_id, const std::string& content)
 {
     nlohmann::json body;
     body["channel_id"] = channel_id;
@@ -16,7 +16,7 @@ std::vector<satori::Message> MessageApi::create(const std::string& channel_id, c
     {
         //std::cout << "HTTP POST 响应: " << response.value() << std::endl;
         nlohmann::json jsonResponse = nlohmann::json::parse(response.value());
-        std::vector<satori::Message> messages = jsonResponse.get<std::vector<satori::Message>>();
+        std::vector<satori::event::Message> messages = jsonResponse.get<std::vector<satori::event::Message>>();
         return messages;
     }
     return {};

@@ -1,4 +1,5 @@
 #include "LLMAgent.h"
+#include <iostream>
 
  
 LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm)
@@ -19,7 +20,15 @@ void LLMAgent::ask(const std::string& userInput, std::function<void(const std::s
             std::lock_guard<std::mutex> lock(self->historyMtx);
             self->history.push_back({"assistant", reply});
         }
-        cb(reply);
+        try 
+        {
+            cb(reply);
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "Callback error in LLMAgent::ask: " << e.what() << std::endl;
+        }
+        
     });
 }
  

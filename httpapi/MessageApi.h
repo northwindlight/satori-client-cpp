@@ -14,7 +14,7 @@ private:
 
 public:
     MessageApi(Bot* b);
-    std::vector<satori::Message> create(const std::string& channel_id, const std::string& content);
+    std::vector<satori::event::Message> create(const std::string& channel_id, const std::string& content);
     void setPostProcess(std::function<std::string(const std::string&)> fn);
 
 };

@@ -16,11 +16,11 @@
 
 **Satori 资源结构**：已完整实现解析（Event、Message、Channel、User、Guild、GuildMember 等）
 
-**Satori 标准元素**：正在更新，目前仅实现 `<at>`
+**Satori 标准元素**：已基本实现解析和封装（ `<at>`、`<sharp>`、`<file>`、`<img>`、`<video>` 等）
 
 **Satori API**：目前仅实现 `message.create`
 
-**LLMClient**：可选功能，实现尚不规范。鉴于 AI 热潮，目前也是主要支持方向。
+**LLMClient**：可选功能。鉴于 AI 热潮，目前也是主要支持方向。
 
 ---
 
@@ -33,17 +33,20 @@
 #include "Satori/Satori.h"
 #include <ixwebsocket/IXNetSystem.h>
 
+namespace se = satori::event;
+namespace sel = satori::element;
+
 int main()
 {
     ix::initNetSystem();
 
     Bot bot("127.0.0.1:5600", "YOUR_TOKEN", "QQ", "YOUR_BOT_QQ");
 
-    bot.addOnMessageCallback([&bot](const satori::Event& event)
+    bot.addOnMessageCallback([&bot](const se::Event& event)
     {
         if (!event.message || !event.channel) return;
-
-        satori::Elements elems = satori::parseContent(event.message->content);
+        //如果需要解析消息元素使用satori::element::parse
+        sel::Elements elems = sel::parse(event.message->content);
         // 在这里实现你的业务逻辑
         bot.message.create(event.channel->id, "收到：" + elems.plainText);
     });
@@ -62,6 +65,9 @@ int main()
 #include "LLMClient/LLMAgent.h"
 #include <ixwebsocket/IXNetSystem.h>
 
+namespace se = satori::event;
+namespace sel = satori::element;
+
 int main()
 {
     ix::initNetSystem();
@@ -75,24 +81,25 @@ int main()
 
     Bot bot("127.0.0.1:5600", "YOUR_TOKEN", "QQ", "YOUR_BOT_QQ");
 
-    bot.addOnMessageCallback([&bot, &llm](const satori::Event& event)
+    bot.addOnMessageCallback([&bot, &llm](const se::Event& event)
     {
         if (!event.message || !event.channel) return;
 
-        const std::string& channelId = event.channel->id;
-        satori::Elements elems = satori::parseContent(event.message->content);
+        sel::Elements elems = sel::parse(event.message->content);
         //创建agent管理llm上下文
         //使用shared_ptr保证在回调中的生命周期问题
         //如果agent放在外部，则所有对话保持都保持上下文
         auto agent = std::make_shared<LLMAgent>(llm,
             "你是服务器管理助手，名字叫小小北风。\n\n"
         );
-        agent.ask(elems.plainText, [&bot, channelId](
-            const std::string& reply,
-            const std::string& toolName,
-            const std::string& toolOutput)
+        agent.ask(elems.plainText, [&bot, event](const std::string& llmreply)
         {
-            bot.message.create(channelId, reply);
+            //使用builder构造标准元素消息
+            auto reply = sel::Builder()
+                .at(event.user->id, event.user->name.value())
+                .text(llmreply)
+                .build();
+            bot.message.create(event.channel->id, reply);
         });
     });
 

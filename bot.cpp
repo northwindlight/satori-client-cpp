@@ -21,7 +21,7 @@ void Bot::addWSCallback(ix::WebSocketMessageType type, std::function<void(const 
     callbacksByType[type].emplace_back(std::move(callback));
 }
 
-void Bot::addOnMessageCallback(std::function<void(const satori::Event&)> callback)
+void Bot::addOnMessageCallback(std::function<void(const satori::event::Event&)> callback)
 {
     addWSCallback(ix::WebSocketMessageType::Message, [this, callback = std::move(callback)](const ix::WebSocketMessagePtr& msg)
     {
@@ -31,9 +31,16 @@ void Bot::addOnMessageCallback(std::function<void(const satori::Event&)> callbac
             Opcode op = json["op"];
             if (op == EVENT)
             {
-                satori::Event event = json["body"].get<satori::Event>();
+                satori::event::Event event = json["body"].get<satori::event::Event>();
                 sn = event.sn;
-                callback(event);
+                try 
+                {
+                    callback(event);
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << "Callback error in addOnMessageCallback: " << e.what() << std::endl;
+                }
             }
             
         }

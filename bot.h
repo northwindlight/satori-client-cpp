@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <optional>
+#include <atomic>
 
 
 class Bot
@@ -23,7 +24,7 @@ private:
     std::string platform;
     std::unordered_map<ix::WebSocketMessageType, std::vector<std::function<void(const ix::WebSocketMessagePtr&)>>> callbacksByType;
 
-    bool running = false;
+    std::atomic<bool> running = false;
     int sn = 0;
     void run();
     void pingLoop();
@@ -39,7 +40,7 @@ public:
     };
     Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userID);
     void addWSCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);
-    void addOnMessageCallback(std::function<void(const satori::Event&)> callback);
+    void addOnMessageCallback(std::function<void(const satori::event::Event&)> callback);
     std::string getHttpAddr() const { return "http://" + baseAddr + "/v1"; }
     std::optional<std::string> httpGet(const std::string& url);
     std::optional<std::string> httpPost(const std::string& url, const std::string& body);

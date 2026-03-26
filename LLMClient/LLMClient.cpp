@@ -85,7 +85,15 @@ void LLMClient::workerThread() {
         {
             nlohmann::json jsonResponse = nlohmann::json::parse(response->body);
             std::string reply = jsonResponse["choices"][0]["message"]["content"].get<std::string>();
-            req.callback(reply);
+            try 
+            {
+                req.callback(reply);;
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << "Callback error in LLMClient::chat: " << e.what() << std::endl;
+            }
+            
         } 
         catch (const std::exception& e) 
         {
