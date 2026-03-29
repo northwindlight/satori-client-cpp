@@ -96,7 +96,7 @@ int main()
         {
             //使用builder构造标准元素消息
             auto reply = sel::Builder()
-                .at(event.user->id, event.user->name.value())
+                .img("weburl")
                 .text(llmreply)
                 .build();
             bot.message.create(event.channel->id, reply);
