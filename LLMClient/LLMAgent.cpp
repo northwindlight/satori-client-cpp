@@ -34,6 +34,7 @@ void LLMAgent::ask(const std::string& userInput, std::function<void(const std::s
  
 void LLMAgent::clearHistory()
 {
+    std::lock_guard<std::mutex> lock(historyMtx);
     auto system = history.front();
     history.clear();
     history.push_back(system);

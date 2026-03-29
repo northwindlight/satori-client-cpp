@@ -92,7 +92,7 @@ int main()
         auto agent = std::make_shared<LLMAgent>(llm,
             "你是服务器管理助手，名字叫小小北风。\n\n"
         );
-        agent.ask(elems.plainText, [&bot, event](const std::string& llmreply)
+        agent->ask(elems.plainText, [&bot, event](const std::string& llmreply)
         {
             //使用builder构造标准元素消息
             auto reply = sel::Builder()

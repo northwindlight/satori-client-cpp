@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <thread>
 #include <mutex>
@@ -44,7 +45,7 @@ private:
     std::mutex mtx;
     std::condition_variable cv;
     std::queue<Request> requestQueue;
-    bool running = false;
+    std::atomic<bool> running = false;
 
     void workerThread();
 };
