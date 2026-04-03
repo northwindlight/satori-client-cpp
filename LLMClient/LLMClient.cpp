@@ -43,10 +43,7 @@ LLMClient::~LLMClient()
 
 void LLMClient::stop() 
 {
-    {
-        std::lock_guard<std::mutex> lock(mtx);
-        running = false;
-    }
+    running = false;
     cv.notify_all();
 }
 
@@ -66,13 +63,12 @@ void LLMClient::workerThread() {
 
         Request req = std::move(requestQueue.front());
         requestQueue.pop();
-        lock.unlock();
-
         nlohmann::json body;
         body["messages"] = req.messages;
         if (!model.empty()) body["model"] = model;
         body["enable_thinking"] = false;
         body["stream"] = false;
+        lock.unlock();
 
         auto response = httpClient.post(url, body.dump(), args);
         if (response->errorCode != ix::HttpErrorCode::Ok || response->statusCode != 200) 
@@ -101,4 +97,10 @@ void LLMClient::workerThread() {
             std::cerr << response->body << std::endl;
         }
     }
+}
+
+void LLMClient::switchModel(const std::string& newModel) 
+{
+    std::lock_guard<std::mutex> lock(mtx);
+    model = newModel;
 }

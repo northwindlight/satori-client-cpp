@@ -22,8 +22,8 @@ public:
     LLMClient(const std::string& url, const std::string& api_key, const std::string& model);
     ~LLMClient();
 
-    void chat(std::vector<Message> messages,
-              std::function<void(const std::string& reply)> cb);
+    void chat(std::vector<Message> messages, std::function<void(const std::string& reply)> cb);
+    void switchModel(const std::string& newModel);
 
     void stop();
 
