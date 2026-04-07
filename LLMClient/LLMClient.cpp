@@ -74,6 +74,7 @@ void LLMClient::workerThread() {
         if (response->errorCode != ix::HttpErrorCode::Ok || response->statusCode != 200) 
         {
             std::cerr << "LLM HTTP POST 错误: " << response->statusCode << std::endl;
+            req.callback("LLM HTTP POST 错误: " + std::to_string(response->statusCode));
             continue;
         }
 
@@ -81,20 +82,14 @@ void LLMClient::workerThread() {
         {
             nlohmann::json jsonResponse = nlohmann::json::parse(response->body);
             std::string reply = jsonResponse["choices"][0]["message"]["content"].get<std::string>();
-            try 
-            {
-                req.callback(reply);;
-            }
-            catch (const std::exception& e)
-            {
-                std::cerr << "Callback error in LLMClient::chat: " << e.what() << std::endl;
-            }
+            req.callback(reply);
             
         } 
         catch (const std::exception& e) 
         {
             std::cerr << "LLM 响应解析错误: " << e.what() << std::endl;
             std::cerr << response->body << std::endl;
+            req.callback("LLM 响应解析错误: " + std::string(e.what()));
         }
     }
 }

@@ -23,10 +23,9 @@ private:
     std::string userID;
     std::string platform;
     std::unordered_map<ix::WebSocketMessageType, std::vector<std::function<void(const ix::WebSocketMessagePtr&)>>> callbacksByType;
-
     std::atomic<bool> running = false;
     int sn = 0;
-    void run();
+    void init();
     void pingLoop();
     void exceptionHandling();
 public:
@@ -44,11 +43,10 @@ public:
     std::string getHttpAddr() const { return "http://" + baseAddr + "/v1"; }
     std::optional<std::string> httpGet(const std::string& url);
     std::optional<std::string> httpPost(const std::string& url, const std::string& body);
-    void setBaseAddr(const std::string& addr) { baseAddr = addr; }
-    void setUserID(const std::string& id) { userID = id; }
     void identify(const std::string& token);
-    void start();
-    void wsSend(const std::string& message);
+    void launch();
+    void launchAsync();
+    bool wsSend(const std::string& message);
     MessageApi message{this};
     std::string getUserID();
     ~Bot();

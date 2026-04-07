@@ -26,7 +26,7 @@ void LLMAgent::ask(const std::string& userInput, std::function<void(const std::s
         }
         catch (const std::exception& e)
         {
-            std::cerr << "Callback error in LLMAgent::ask: " << e.what() << std::endl;
+            std::cerr << "LLMAgent::ask 错误: " << e.what() << std::endl;
         }
         
     });

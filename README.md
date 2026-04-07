@@ -51,7 +51,8 @@ int main()
         bot.message.create(event.channel->id, "收到：" + elems.plainText);
     });
 
-    bot.start(); // 阻塞主线程
+    bot.launch(); // 阻塞主线程
+    // bot.launchAsync()异步执行
     ix::uninitNetSystem();
 }
 ```
@@ -87,10 +88,10 @@ int main()
 
         sel::Elements elems = sel::parse(event.message->content);
         //创建agent管理llm上下文
-        //使用shared_ptr保证在回调中的生命周期问题
-        //如果agent放在外部，则所有对话保持都保持上下文
+        //必须使用shared_ptr保证在回调中的生命周期问题
+        //如果agent放在外部，则所有对话保持都保持上下文，放在内部则每个对话独立保持上下文
         auto agent = std::make_shared<LLMAgent>(llm,
-            "你是服务器管理助手，名字叫小小北风。\n\n"
+            "你是服务器管理助手，名字叫小小北风。\n"
         );
         agent->ask(elems.plainText, [&bot, event](const std::string& llmreply)
         {
@@ -103,7 +104,7 @@ int main()
         });
     });
 
-    bot.start();
+    bot.launch();
     ix::uninitNetSystem();
 }
 ```

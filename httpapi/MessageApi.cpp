@@ -19,12 +19,16 @@ std::vector<satori::event::Message> MessageApi::create(const std::string& channe
         std::vector<satori::event::Message> messages = jsonResponse.get<std::vector<satori::event::Message>>();
         return messages;
     }
-    return {};
-
+    else 
+    {
+        std::cerr << "HTTP POST 请求失败，无法创建消息" << std::endl;
+        return {};
+    }
 }
 
 void MessageApi::setPostProcess(std::function<std::string(const std::string&)> fn)
 {
+    //用于后处理消息内容，例如屏蔽关键词等，默认为直接返回内容不变
     postProcess = std::move(fn);
 }
 

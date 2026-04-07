@@ -58,7 +58,7 @@ int main()
 
     });
 
-    rin.start();
+    rin.launch();
     ix::uninitNetSystem();
     return 0;
 }

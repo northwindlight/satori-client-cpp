@@ -33,28 +33,18 @@ void Bot::addOnMessageCallback(std::function<void(const satori::event::Event&)> 
             {
                 satori::event::Event event = json["body"].get<satori::event::Event>();
                 sn = event.sn;
-                try 
-                {
-                    callback(event);
-                }
-                catch (const std::exception& e)
-                {
-                    std::cerr << "Callback error in addOnMessageCallback: " << e.what() << std::endl;
-                }
+                callback(event);
             }
             
         }
         catch (const std::exception& e)
         {
-            std::cerr << "JSON parse error in addOnMessageCallback: " << e.what() << std::endl;
+            std::cerr << "addOnMessageCallback 错误: " << e.what() << std::endl;
         }
     });
 }
-
-void Bot::start()
-{   
-    if (running) return;
-    running = true;
+void Bot::init()
+{
     webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& msg) {
         auto it = callbacksByType.find(msg->type);
         if (it != callbacksByType.end()) {
@@ -65,18 +55,33 @@ void Bot::start()
                 } 
                 catch (const std::exception& e) 
                 {
-                    std::cerr << "callback error: " << e.what() << std::endl;
+                    std::cerr << "setOnMessageCallback 错误: " << e.what() << std::endl;
                 }
             }
         }
     });
     webSocket.start();
+}
+
+void Bot::launch()
+{   
+    if (running) return;
+    running = true;
+    init();
     pingLoop();
 }
 
-void Bot::wsSend(const std::string& message)
+void Bot::launchAsync()
 {
-    webSocket.send(message);
+    if (running) return;
+    running = true;
+    init();
+    std::jthread(&Bot::pingLoop, this);
+}
+
+bool Bot::wsSend(const std::string& message)
+{
+    return webSocket.send(message).success;
 }
 
 void Bot::pingLoop()
@@ -89,7 +94,10 @@ void Bot::pingLoop()
         {
             nlohmann::json ping;
             ping["op"] = PING;
-            webSocket.send(ping.dump());
+            if (!wsSend(ping.dump()))
+            {
+                std::cerr << "发送 PING 失败" << std::endl;
+            }
         }
     }
 }
@@ -105,7 +113,10 @@ void Bot::identify(const std::string& token)
         identify["op"] = IDENTIFY;
         identify["body"]["token"] = token;
         if (sn) identify["body"]["sn"] = sn;
-        wsSend(identify.dump());
+        if (!wsSend(identify.dump()))
+        {
+            std::cerr << "发送 IDENTIFY 失败" << std::endl;
+        }
     });
     addWSCallback(ix::WebSocketMessageType::Message, [this](const ix::WebSocketMessagePtr& msg)
     {
@@ -128,7 +139,6 @@ void Bot::exceptionHandling()
     addWSCallback(ix::WebSocketMessageType::Close, [this](const ix::WebSocketMessagePtr& msg)
     {
         std::cerr << "WebSocket 连接关闭: " << msg->closeInfo.code << " - " << msg->closeInfo.reason << std::endl;
-        running = false;
     });
 }
 
@@ -159,7 +169,9 @@ std::string Bot::getUserID()
     return userID;
 }
 
-Bot::~Bot(){
+Bot::~Bot()
+{
+    running = false;
     webSocket.close();
 }
 
