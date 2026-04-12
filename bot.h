@@ -24,7 +24,8 @@ private:
     std::string platform;
     std::unordered_map<ix::WebSocketMessageType, std::vector<std::function<void(const ix::WebSocketMessagePtr&)>>> callbacksByType;
     std::atomic<bool> running = false;
-    int sn = 0;
+    std::atomic<int> sn = 0;
+    std::jthread pingThread;
     void init();
     void pingLoop();
     void exceptionHandling();

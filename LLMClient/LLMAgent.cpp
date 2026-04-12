@@ -2,7 +2,7 @@
 #include <iostream>
 
  
-LLMAgent::LLMAgent(LLMClient& llm, const std::string& systemPrompt) : llm(llm)
+LLMAgent::LLMAgent(PrivateKey, LLMClient& llm, const std::string& systemPrompt) : llm(llm)
 {
     history.push_back({"system", systemPrompt});
 }

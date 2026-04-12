@@ -76,7 +76,7 @@ void Bot::launchAsync()
     if (running) return;
     running = true;
     init();
-    std::jthread(&Bot::pingLoop, this);
+    pingThread = std::jthread(&Bot::pingLoop, this);
 }
 
 bool Bot::wsSend(const std::string& message)
@@ -112,7 +112,7 @@ void Bot::identify(const std::string& token)
         nlohmann::json identify;
         identify["op"] = IDENTIFY;
         identify["body"]["token"] = token;
-        if (sn) identify["body"]["sn"] = sn;
+        if (sn) identify["body"]["sn"] = sn.load();
         if (!wsSend(identify.dump()))
         {
             std::cerr << "发送 IDENTIFY 失败" << std::endl;
