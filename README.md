@@ -90,8 +90,8 @@ int main()
         //创建agent管理llm上下文
         //必须使用shared_ptr保证在回调中的生命周期问题
         //如果agent放在外部，则所有对话保持都保持上下文，放在内部则每个对话独立保持上下文
-        auto agent = std::make_shared<LLMAgent>(llm,
-            "你是服务器管理助手，名字叫小小北风。\n"
+        auto agent = LLMAgent::create(llm,
+            "你是服务器管理助手，名字叫小小北风。\n\n"
         );
         agent->ask(elems.plainText, [&bot, event](const std::string& llmreply)
         {
