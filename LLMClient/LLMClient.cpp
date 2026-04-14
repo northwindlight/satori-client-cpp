@@ -87,9 +87,7 @@ void LLMClient::workerThread() {
         } 
         catch (const std::exception& e) 
         {
-            std::cerr << "LLM 响应解析错误: " << e.what() << std::endl;
-            std::cerr << response->body << std::endl;
-            req.callback("LLM 响应解析错误: " + std::string(e.what()));
+            throw std::runtime_error(std::string("LLM 响应解析错误: ") + e.what());
         }
     }
 }

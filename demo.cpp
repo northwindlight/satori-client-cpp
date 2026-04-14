@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <ixwebsocket/IXNetSystem.h>
 #include <iostream>
 #include "Satori/Satori.h"
@@ -26,37 +27,65 @@ int main()
     //这些由satori服务端sdk提供
     Bot rin("127.0.0.1:5600", "TOUHOUPROJECTFOREVER", "QQ", "3824302087");
     //satori bot消息回调，通过addOnMessageCallback来自行实现bot功能
-    rin.addOnMessageCallback([&rin, &llm](const se::Event& event)
-    {
-        if (!event.message.has_value() || !event.channel.has_value()) return;
+    //c++20没有expected，所以这里使用了一个第三方库tl::expected来实现更优雅的错误处理
+    try{
+        rin.addOnMessageCallback([&rin, &llm](const se::Event& event)
+        {
+            if (!event.message.has_value() || !event.channel.has_value()) return;
 
-        //若需要解析content，这里提供了satori::parseContent来处理satori的标准元素
-        sel::Elements elements = sel::parse(event.message->content);
-        std::cout << "新消息 [" << event.channel->id << "]: " << event.message->content << std::endl;
-        
-        auto it = std::ranges::find_if(elements.ats, [&](const auto& at) {
-            return at.id.has_value() && at.id.value() == rin.getUserID();
-        });
-
-        if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
-            //使用shared_ptr保证在回调中的生命周期问题
-            auto agent = LLMAgent::create(llm,
-                "你是服务器管理助手，名字叫小小北风。\n\n"
-            );
-            agent->ask(elements.plainText , [&rin, event](const std::string& llmreply) 
-            {
-                //如果你想调用工具，可以再这里实现自己的调用工具功能
-                //然后再次调用ask来进行下一轮会话
-                //使用builder构造标准元素消息
-                auto reply = sel::Builder()
-                .at(event.user->id, event.user->name.value())
-                .text(llmreply)
-                .build();
-                rin.message.create(event.channel->id, reply);
+            //若需要解析content，这里提供了satori::parseContent来处理satori的标准元素
+            sel::Elements elements = sel::parse(event.message->content);
+            std::cout << "新消息 [" << event.channel->id << "]: " << event.message->content << std::endl;
+            
+            auto it = std::ranges::find_if(elements.ats, [&](const auto& at) {
+                return at.id.has_value() && at.id.value() == rin.getUserID();
             });
-        }
 
-    });
+            if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
+                //使用shared_ptr保证在回调中的生命周期问题
+                auto agent = LLMAgent::create(llm,
+                    "你是服务器管理助手，名字叫小小北风。\n\n"
+                );
+                try 
+                {
+                    agent->ask(elements.plainText , [&rin, event](const std::string& llmreply) 
+                    {
+                        //如果你想调用工具，可以再这里实现自己的调用工具功能
+                        //然后再次调用ask来进行下一轮会话
+                        //使用builder构造标准元素消息
+                        auto reply = sel::Builder()
+                        .at(event.user->id, event.user->name.value())
+                        .text(llmreply)
+                        .build();
+                        try 
+                        {
+                            rin.message.create(event.channel->id, reply);
+                        }
+                        catch (const std::exception& e) 
+                        {
+                            std::cerr << "发送消息失败: " << e.what() << std::endl;
+                        }
+                    });
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << e.what() << std::endl;
+                    try 
+                    {
+                        rin.message.create(event.channel->id, e.what());
+                    }
+                    catch (const std::exception& e) 
+                    {
+                        std::cerr << "发送消息失败: " << e.what() << std::endl;
+                    }
+                }
+            }
+        });
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 
     rin.launch();
     ix::uninitNetSystem();

@@ -39,7 +39,7 @@ void Bot::addOnMessageCallback(std::function<void(const satori::event::Event&)> 
         }
         catch (const std::exception& e)
         {
-            std::cerr << "addOnMessageCallback 错误: " << e.what() << std::endl;
+            throw std::runtime_error(std::string("解析消息失败: ") + e.what());
         }
     });
 }
@@ -142,24 +142,22 @@ void Bot::exceptionHandling()
     });
 }
 
-std::optional<std::string> Bot::httpGet(const std::string& url)
+std::string Bot::httpGet(const std::string& url)
 {
     auto response = httpClient.get(url, args);
     if (response->errorCode != ix::HttpErrorCode::Ok)
     {   
-        std::cerr << "HTTP GET 错误: " << response->statusCode << std::endl;
-        return std::nullopt;
+        throw std::runtime_error("HTTP GET 失败: " + std::to_string(response->statusCode)+ ": " + response->errorMsg + "\n响应内容: " + response->body);
     }
     return response->body;
 }
 
-std::optional<std::string> Bot::httpPost(const std::string& url, const std::string& body)
+std::string Bot::httpPost(const std::string& url, const std::string& body)
 {
     auto response = httpClient.post(url, body, args);
     if (response->errorCode != ix::HttpErrorCode::Ok)
     {
-        std::cerr << "HTTP POST 错误: " << response->statusCode << std::endl;
-        return std::nullopt;
+        throw std::runtime_error("HTTP POST 失败: " + std::to_string(response->statusCode) + ": " + response->errorMsg + "\n响应内容: " + response->body);
     }
     return response->body;
 }

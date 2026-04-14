@@ -18,7 +18,7 @@
 
 **Satori 标准元素**：已基本实现解析和封装（ `<at>`、`<sharp>`、`<file>`、`<img>`、`<video>` 等）
 
-**Satori API**：目前仅实现 `message.create`
+**Satori API**：目前仅实现 `message.create` 、`message.get` 、 `message.delete` 
 
 **LLMClient**：可选功能。鉴于 AI 热潮，目前也是主要支持方向。
 

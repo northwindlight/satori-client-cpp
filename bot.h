@@ -7,7 +7,6 @@
 #include <functional>
 #include <vector>
 #include <unordered_map>
-#include <optional>
 #include <atomic>
 
 
@@ -42,8 +41,8 @@ public:
     void addWSCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);
     void addOnMessageCallback(std::function<void(const satori::event::Event&)> callback);
     std::string getHttpAddr() const { return "http://" + baseAddr + "/v1"; }
-    std::optional<std::string> httpGet(const std::string& url);
-    std::optional<std::string> httpPost(const std::string& url, const std::string& body);
+    std::string httpGet(const std::string& url);
+    std::string httpPost(const std::string& url, const std::string& body);
     void identify(const std::string& token);
     void launch();
     void launchAsync();
