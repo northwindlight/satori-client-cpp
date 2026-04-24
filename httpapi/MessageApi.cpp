@@ -1,7 +1,6 @@
 #include "MessageApi.h"
 #include "../bot.h"
 #include "../nlohmann/json.hpp"
-#include <iostream>
 
 
 MessageApi::MessageApi(Bot* b) : bot(b) {}
