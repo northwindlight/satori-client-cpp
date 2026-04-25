@@ -111,6 +111,111 @@ int main()
 
 ---
 更多示例请参照demo.cpp
+### 使用 LLMClient + Tool（函数调用）
+
+LLMAgent 支持 LLM 函数调用（tool calling）。通过注册工具，让 LLM 在需要时自动调用你定义的函数并获取结果。
+
+```cpp
+#include "bot.h"
+#include "Satori/Satori.h"
+#include "LLMClient/LLMClient.h"
+#include "LLMClient/LLMAgent.h"
+#include "LLMClient/tool.hpp"
+#include <ixwebsocket/IXNetSystem.h>
+
+namespace se = satori::event;
+namespace sel = satori::element;
+
+int main()
+{
+    ix::initNetSystem();
+
+    LLMClient llm(
+        "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+        "sk-xxxxx",
+        "qwen3-14b"
+    );
+
+    // 注册工具
+    Tool tool;
+    tool.toolRegister(
+        "get_time",
+        "获取当前系统时间",
+        {},
+        [](const nlohmann::json&) -> std::string {
+            auto now = std::chrono::system_clock::now();
+            auto t   = std::chrono::system_clock::to_time_t(now);
+            return std::ctime(&t);
+        }
+    );
+
+    tool.toolRegister(
+        "echo",
+        "回显输入内容",
+        {{"text", "string", "要回显的文本", true}},
+        [](const nlohmann::json& args) -> std::string {
+            return "你说的是: " + args.value("text", "");
+        }
+    );
+
+    // 创建带工具的 agent，所有消息共享上下文
+    auto agent = LLMAgent::create(llm, "你是智能助手", tool);
+
+    // 可选：在工具执行后插入自定义逻辑（如发图片）
+    agent->setToolHook([](const Tool::Call& call, const std::string& output) {
+        if (call.name == "fortune") {
+            // 工具执行后额外处理
+        }
+    });
+
+    Bot bot("127.0.0.1:5600", "YOUR_TOKEN", "QQ", "YOUR_BOT_QQ");
+
+    bot.addOnMessageCallback([&bot, agent](const se::Event& event)
+    {
+        if (!event.message || !event.channel) return;
+
+        sel::Elements elems = sel::parse(event.message->content);
+
+        // 动态更新 system prompt（如注入用户信息）
+        if (event.user.has_value())
+            agent->setSystemPrompt("当前用户：" + event.user->id);
+
+        agent->ask(elems.plainText, [&bot, event](const std::string& reply)
+        {
+            bot.message.create(event.channel->id, reply);
+        });
+    });
+
+    bot.launch();
+    ix::uninitNetSystem();
+}
+```
+
+更多示例请参照 `demo_toolcall.cpp`。
+
+### 注册工具 API
+
+```cpp
+tool.toolRegister(
+    "tool_name",          // 工具名称，LLM 通过此名调用
+    "工具描述",            // 告诉 LLM 何时调用
+    {                     // 参数定义，可为空
+        {"param_name", "string", "参数描述", true /* 是否必填 */}
+    },
+    handler               // 回调：接收 JSON args，返回 string 结果
+);
+```
+
+### ToolHook
+
+通过 `agent->setToolHook(callback)` 注册钩子，在每个工具执行完成后触发，可用于：
+- 根据工具结果向消息缓冲区追加图片、@ 等元素
+- 日志记录或额外副作用
+
+钩子回调签名：`void(const Tool::Call& call, const std::string& output)`
+
+---
+
 ## 依赖
 
 | 依赖 | 说明 |

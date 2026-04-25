@@ -57,14 +57,14 @@ namespace satori {
             std::optional<std::string>  nick;
             std::optional<std::string>  avatar;
             std::optional<long long> joined_at;
-            std::optional<std::vector<GuildRole>> role;
+            std::optional<std::vector<GuildRole>> roles;
         };
         void from_json(const nlohmann::json& j, GuildMember& m);
 
         struct Message
         {
             std::string id;
-            std::string content;
+            std::optional<std::string> content;
             std::optional<Channel> channel;
             std::optional<Guild>  guild;
             std::optional<GuildMember> member;
@@ -84,13 +84,16 @@ namespace satori {
         };
         void from_json(const nlohmann::json& j, LoginStatus& s);
 
+        // status 和 adapter 在协议定义中为非可选字段，
+        // 但部分下游 Satori 服务端实现在某些场景下可能不提供这两个字段，
+        // 因此设为 optional 以兼容实际数据。
         struct Login
         {
             int sn;
             std::optional<std::string> platform;
             std::optional<User> user;
-            LoginStatus status;
-            std::string adapter;
+            std::optional<LoginStatus> status;
+            std::optional<std::string> adapter;
             std::optional<std::vector<std::string>> features;
         };
         void from_json(const nlohmann::json& j, Login& l);
@@ -109,6 +112,20 @@ namespace satori {
         };
         void from_json(const nlohmann::json& j, Button& b);
 
+        struct Emoji
+        {
+            std::string id;
+            std::optional<std::string> name;
+        };
+        void from_json(const nlohmann::json& j, Emoji& e);
+
+        struct Friend
+        {
+            std::optional<User> user;
+            std::optional<std::string> nick;
+        };
+        void from_json(const nlohmann::json& j, Friend& f);
+
         struct Event
         {
             int sn;
@@ -118,6 +135,8 @@ namespace satori {
             std::optional<Argv> argv;
             std::optional<Button> button;
             std::optional<Channel> channel;
+            std::optional<Emoji> emoji;
+            std::optional<Friend> friend_;
             std::optional<Guild> guild;
             std::optional<GuildMember> member;
             std::optional<Message> message;
@@ -219,120 +238,26 @@ namespace satori {
 
         class Builder {
         public:
-            Builder& at(const std::string& id, const std::string& name = "") {
-                auto* el = doc.NewElement("at");
-                el->SetAttribute("id", id.c_str());
-                if (!name.empty()) el->SetAttribute("name", name.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& atAll() {
-                auto* el = doc.NewElement("at");
-                el->SetAttribute("type", "all");
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& atHere() {
-                auto* el = doc.NewElement("at");
-                el->SetAttribute("type", "here");
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& sharp(const std::string& id, const std::string& name = "") {
-                auto* el = doc.NewElement("sharp");
-                el->SetAttribute("id", id.c_str());
-                if (!name.empty()) el->SetAttribute("name", name.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& text(const std::string& content) {
-                root->InsertEndChild(doc.NewText(content.c_str()));
-                return *this;
-            }
-
-            Builder& img(const std::string& src) {
-                auto* el = doc.NewElement("img");
-                el->SetAttribute("src", src.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& audio(const std::string& src) {
-                auto* el = doc.NewElement("audio");
-                el->SetAttribute("src", src.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& video(const std::string& src) {
-                auto* el = doc.NewElement("video");
-                el->SetAttribute("src", src.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& file(const std::string& src, const std::string& title = "") {
-                auto* el = doc.NewElement("file");
-                el->SetAttribute("src", src.c_str());
-                if (!title.empty()) el->SetAttribute("title", title.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& br() {
-                root->InsertEndChild(doc.NewElement("br"));
-                return *this;
-            }
-
-            Builder& bold(const std::string& content) {
-                auto* el = doc.NewElement("b");
-                el->SetText(content.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& italic(const std::string& content) {
-                auto* el = doc.NewElement("i");
-                el->SetText(content.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& code(const std::string& content) {
-                auto* el = doc.NewElement("code");
-                el->SetText(content.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            Builder& quote(const std::string& id) {
-                auto* el = doc.NewElement("quote");
-                el->SetAttribute("id", id.c_str());
-                root->InsertEndChild(el);
-                return *this;
-            }
-
-            std::string build() {
-                std::string result;
-                for (auto* node = root->FirstChild(); node; node = node->NextSibling()) {
-                    tinyxml2::XMLPrinter printer(nullptr, true);
-                    node->Accept(&printer);
-                    result += printer.CStr();
-                }
-                return result;
-            }
+            Builder();
+            Builder& at(const std::string& id, const std::string& name = "");
+            Builder& atAll();
+            Builder& atHere();
+            Builder& sharp(const std::string& id, const std::string& name = "");
+            Builder& text(const std::string& content);
+            Builder& img(const std::string& src);
+            Builder& audio(const std::string& src);
+            Builder& video(const std::string& src);
+            Builder& file(const std::string& src, const std::string& title = "");
+            Builder& br();
+            Builder& bold(const std::string& content);
+            Builder& italic(const std::string& content);
+            Builder& code(const std::string& content);
+            Builder& quote(const std::string& id);
+            std::string build();
 
         private:
             tinyxml2::XMLDocument doc;
-            tinyxml2::XMLElement* root = [this] {
-                auto* r = doc.NewElement("_");
-                doc.InsertFirstChild(r);
-                return r;
-            }();
+            tinyxml2::XMLElement* root;
         };
     }
 }

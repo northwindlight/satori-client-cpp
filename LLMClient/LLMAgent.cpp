@@ -1,11 +1,11 @@
 #include "LLMAgent.h"
 
-LLMAgent::LLMAgent(PrivateKey, LLMClient& llm, const std::string& systemPrompt): llm(llm)
+LLMAgent::LLMAgent(PrivateKey, LLMClient& llm, const std::string systemPrompt): llm(llm)
 {
     history.push_back({ "system", systemPrompt });
 }
 
-LLMAgent::LLMAgent(PrivateKey, LLMClient& llm, const std::string& systemPrompt, Tool& tool): llm(llm), tool(std::ref(tool))
+LLMAgent::LLMAgent(PrivateKey, LLMClient& llm, const std::string systemPrompt, Tool& tool): llm(llm), tool(std::ref(tool))
 {
     history.push_back({ "system", systemPrompt });
 }
@@ -117,8 +117,9 @@ void LLMAgent::executeToolCalls(const std::vector<LLMClient::ToolCall>& calls, s
         Tool::Call call = Tool::fromToolCall(calls[i]);
         std::string callId = calls[i].id;
 
-        tool->get().run(call,[self = shared_from_this(), i, n, callId, counter, results, onAllDone](const std::string& output)
+        tool->get().run(call,[self = shared_from_this(), i, n, call, callId, counter, results, onAllDone](const std::string& output)
             {
+                if (self->toolHook.has_value()) (*self->toolHook)(call, output);
                 (*results)[i] = { callId, output };
 
                 // 最后一个完成的线程负责收尾

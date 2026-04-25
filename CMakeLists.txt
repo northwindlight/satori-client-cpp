@@ -18,7 +18,20 @@ add_executable(${PROJECT_NAME}
     tinyxml2/tinyxml2.cpp
 )
 
+add_executable(demo_toolcall
+    demo_toolcall.cpp
+    bot.cpp
+    Satori/Satori.cpp
+    httpapi/MessageApi.cpp
+    LLMClient/LLMClient.cpp
+    LLMClient/LLMAgent.cpp
+    tinyxml2/tinyxml2.cpp
+)
 
 target_link_libraries(${PROJECT_NAME}
+    ixwebsocket::ixwebsocket
+)
+
+target_link_libraries(demo_toolcall
     ixwebsocket::ixwebsocket
 )

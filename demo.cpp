@@ -34,8 +34,8 @@ int main()
             if (!event.message.has_value() || !event.channel.has_value()) return;
 
             //若需要解析content，这里提供了satori::parseContent来处理satori的标准元素
-            sel::Elements elements = sel::parse(event.message->content);
-            std::cout << "新消息 [" << event.channel->id << "]: " << event.message->content << std::endl;
+            sel::Elements elements = sel::parse(event.message->content.value_or(""));
+            std::cout << "新消息 [" << event.channel->id << "]: " << event.message->content.value_or("") << std::endl;
             
             auto it = std::ranges::find_if(elements.ats, [&](const auto& at) {
                 return at.id.has_value() && at.id.value() == rin.getUserID();

@@ -54,14 +54,13 @@ namespace satori {
             opt(j, "nick",      m.nick);
             opt(j, "avatar",    m.avatar);
             opt(j, "joined_at", m.joined_at);
-            if (j.contains("roles") && j["roles"].is_array())
-                m.role = j["roles"].get<std::vector<GuildRole>>();
+            opt(j, "roles",     m.roles);
         }
 
         void from_json(const nlohmann::json& j, Message& m)
         {
             j.at("id").get_to(m.id);
-            j.at("content").get_to(m.content);
+            opt(j, "content", m.content);
             opt(j, "channel",    m.channel);
             opt(j, "guild",      m.guild);
             opt(j, "member",     m.member);
@@ -78,12 +77,11 @@ namespace satori {
         void from_json(const nlohmann::json& j, Login& l)
         {
             j.at("sn").get_to(l.sn);
-            j.at("status").get_to(l.status);
-            j.at("adapter").get_to(l.adapter);
+            opt(j, "status",  l.status);
+            opt(j, "adapter", l.adapter);
             opt(j, "platform", l.platform);
             opt(j, "user",     l.user);
-            if (j.contains("features") && j["features"].is_array())
-                l.features = j["features"].get<std::vector<std::string>>();
+            opt(j, "features", l.features);
         }
 
         void from_json(const nlohmann::json& j, Argv& a)
@@ -100,6 +98,18 @@ namespace satori {
             j.at("id").get_to(b.id);
         }
 
+        void from_json(const nlohmann::json& j, Emoji& e)
+        {
+            j.at("id").get_to(e.id);
+            opt(j, "name", e.name);
+        }
+
+        void from_json(const nlohmann::json& j, Friend& f)
+        {
+            opt(j, "user", f.user);
+            opt(j, "nick", f.nick);
+        }
+
         void from_json(const nlohmann::json& j, Event& e)
         {
             j.at("sn").get_to(e.sn);
@@ -109,6 +119,8 @@ namespace satori {
             opt(j, "argv",     e.argv);
             opt(j, "button",   e.button);
             opt(j, "channel",  e.channel);
+            opt(j, "emoji",    e.emoji);
+            opt(j, "friend",   e.friend_);
             opt(j, "guild",    e.guild);
             opt(j, "member",   e.member);
             opt(j, "message",  e.message);
@@ -187,6 +199,120 @@ namespace satori {
             }
             return result;
         }
-        
+
+        // ── Builder ─────────────────────────────────────────────
+
+        Builder::Builder() {
+            root = doc.NewElement("_");
+            doc.InsertFirstChild(root);
+        }
+
+        Builder& Builder::at(const std::string& id, const std::string& name) {
+            auto* el = doc.NewElement("at");
+            el->SetAttribute("id", id.c_str());
+            if (!name.empty()) el->SetAttribute("name", name.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::atAll() {
+            auto* el = doc.NewElement("at");
+            el->SetAttribute("type", "all");
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::atHere() {
+            auto* el = doc.NewElement("at");
+            el->SetAttribute("type", "here");
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::sharp(const std::string& id, const std::string& name) {
+            auto* el = doc.NewElement("sharp");
+            el->SetAttribute("id", id.c_str());
+            if (!name.empty()) el->SetAttribute("name", name.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::text(const std::string& content) {
+            root->InsertEndChild(doc.NewText(content.c_str()));
+            return *this;
+        }
+
+        Builder& Builder::img(const std::string& src) {
+            auto* el = doc.NewElement("img");
+            el->SetAttribute("src", src.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::audio(const std::string& src) {
+            auto* el = doc.NewElement("audio");
+            el->SetAttribute("src", src.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::video(const std::string& src) {
+            auto* el = doc.NewElement("video");
+            el->SetAttribute("src", src.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::file(const std::string& src, const std::string& title) {
+            auto* el = doc.NewElement("file");
+            el->SetAttribute("src", src.c_str());
+            if (!title.empty()) el->SetAttribute("title", title.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::br() {
+            root->InsertEndChild(doc.NewElement("br"));
+            return *this;
+        }
+
+        Builder& Builder::bold(const std::string& content) {
+            auto* el = doc.NewElement("b");
+            el->SetText(content.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::italic(const std::string& content) {
+            auto* el = doc.NewElement("i");
+            el->SetText(content.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::code(const std::string& content) {
+            auto* el = doc.NewElement("code");
+            el->SetText(content.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        Builder& Builder::quote(const std::string& id) {
+            auto* el = doc.NewElement("quote");
+            el->SetAttribute("id", id.c_str());
+            root->InsertEndChild(el);
+            return *this;
+        }
+
+        std::string Builder::build() {
+            std::string result;
+            for (auto* node = root->FirstChild(); node; node = node->NextSibling()) {
+                tinyxml2::XMLPrinter printer(nullptr, true);
+                node->Accept(&printer);
+                result += printer.CStr();
+            }
+            return result;
+        }
+
     }
 }
