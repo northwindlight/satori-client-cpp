@@ -1,12 +1,8 @@
 # satori-client-cpp
 
-一个基于 C++ 的 [Satori 协议](https://satori.chat/zh-CN/introduction.html) 客户端框架。
+[Satori 协议](https://satori.chat/zh-CN/introduction.html) 的 C++ 客户端实现。配合 Satori 服务端（[LLBot](https://www.llonebot.com/) 等）使用，可接入 QQ、Telegram、Discord 等聊天平台。
 
-**本框架不能独立工作**，需要配合额外的 Satori 服务器（如 [LLBot](https://www.llonebot.com/) 等）使用。
-
-这是一个简单的个人项目，代码使用现代 C++，**必须使用 C++20 或更高标准**。目前存在诸多不足，正在持续更新。
-
-**本框架不是开箱即用的 Bot 框架**，不会自动帮你实现任何机器人功能。你需要熟悉 C++，自己在回调中实现业务逻辑。
+C++20，依赖 [ixwebsocket](https://github.com/machinezone/IXWebSocket)。
 
 
 ---
