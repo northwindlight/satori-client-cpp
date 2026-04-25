@@ -35,6 +35,7 @@ namespace satori {
             std::optional<std::string>  parent_id;
         };
         void from_json(const nlohmann::json& j, Channel& c);
+        void to_json(nlohmann::json& j, const Channel& c);
 
         struct Guild
         {
@@ -50,6 +51,7 @@ namespace satori {
             std::optional<std::string>  name;
         };
         void from_json(const nlohmann::json& j, GuildRole& r);
+        void to_json(nlohmann::json& j, const GuildRole& r);
 
         struct GuildMember
         {
@@ -259,5 +261,36 @@ namespace satori {
             tinyxml2::XMLDocument doc;
             tinyxml2::XMLElement* root;
         };
+    }
+
+    template<typename T>
+    struct List {
+        std::vector<T> data;
+        std::optional<std::string> next;
+    };
+    template<typename T>
+    void from_json(const nlohmann::json& j, List<T>& l)
+    {
+        if (j.contains("data") && j["data"].is_array())
+            l.data = j["data"].get<std::vector<T>>();
+        if (j.contains("next") && !j["next"].is_null())
+            l.next = j["next"].get<std::string>();
+    }
+
+    template<typename T>
+    struct BidiList {
+        std::vector<T> data;
+        std::optional<std::string> prev;
+        std::optional<std::string> next;
+    };
+    template<typename T>
+    void from_json(const nlohmann::json& j, BidiList<T>& bl)
+    {
+        if (j.contains("data") && j["data"].is_array())
+            bl.data = j["data"].get<std::vector<T>>();
+        if (j.contains("prev") && !j["prev"].is_null())
+            bl.prev = j["prev"].get<std::string>();
+        if (j.contains("next") && !j["next"].is_null())
+            bl.next = j["next"].get<std::string>();
     }
 }

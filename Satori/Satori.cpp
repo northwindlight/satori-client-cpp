@@ -35,6 +35,14 @@ namespace satori {
             opt(j, "parent_id", c.parent_id);
         }
 
+        void to_json(nlohmann::json& j, const Channel& c)
+        {
+            j["id"] = c.id;
+            j["type"] = c.type;
+            if (c.name.has_value()) j["name"] = c.name.value();
+            if (c.parent_id.has_value()) j["parent_id"] = c.parent_id.value();
+        }
+
         void from_json(const nlohmann::json& j, Guild& g)
         {
             j.at("id").get_to(g.id);
@@ -46,6 +54,12 @@ namespace satori {
         {
             j.at("id").get_to(r.id);
             opt(j, "name", r.name);
+        }
+
+        void to_json(nlohmann::json& j, const GuildRole& r)
+        {
+            j["id"] = r.id;
+            if (r.name.has_value()) j["name"] = r.name.value();
         }
 
         void from_json(const nlohmann::json& j, GuildMember& m)

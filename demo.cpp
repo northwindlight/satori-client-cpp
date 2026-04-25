@@ -1,8 +1,7 @@
 #include <cstdlib>
 #include <ixwebsocket/IXNetSystem.h>
 #include <iostream>
-#include "Satori/Satori.h"
-#include "bot.h"
+#include "satori_client.h"
 #include "LLMClient/LLMClient.h"
 #include "LLMClient/LLMAgent.h"
 
@@ -38,7 +37,7 @@ int main()
             std::cout << "新消息 [" << event.channel->id << "]: " << event.message->content.value_or("") << std::endl;
             
             auto it = std::ranges::find_if(elements.ats, [&](const auto& at) {
-                return at.id.has_value() && at.id.value() == rin.getUserID();
+                return at.id.has_value() && at.id.value() == rin.userId();
             });
 
             if (event.channel->id.find("private") != std::string::npos || it != elements.ats.end()) {
