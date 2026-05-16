@@ -204,6 +204,15 @@ namespace satori {
                 } else if (tag == "quote") {
                     Quote quote;
                     tryAttr(el, "id", quote.id);
+                    for (auto* qn = el->FirstChild(); qn; qn = qn->NextSibling()) {
+                        if (auto* t = qn->ToText()) {
+                            quote.content += t->Value();
+                        } else if (auto* qe = qn->ToElement()) {
+                            if (auto* inner = qe->GetText()) {
+                                quote.content += inner;
+                            }
+                        }
+                    }
                     result.quotes.push_back(std::move(quote));
                 }
                 // 装饰元素(b/i/u/code等)只取文本内容，归入plainText

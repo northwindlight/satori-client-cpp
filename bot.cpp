@@ -1,5 +1,6 @@
 #include "bot.h"
 #include <iostream>
+#include <stdexcept>
 
 Bot::Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userId)
     : baseAddr_(baseAddr), token_(token), userId_(userId), platform_(platform)
@@ -7,7 +8,7 @@ Bot::Bot(const std::string& baseAddr, const std::string& token, const std::strin
     webSocket_.setUrl("ws://" + baseAddr_ + "/v1/events");
     args_ = httpClient_.createRequest();
     args_->connectTimeout = 5;
-    args_->transferTimeout = 10;
+    args_->transferTimeout = 60;
     headers_["Content-Type"] = "application/json";
     headers_["Satori-Platform"] = platform_;
     headers_["Authorization"] = "Bearer " + token_;
@@ -19,11 +20,13 @@ Bot::Bot(const std::string& baseAddr, const std::string& token, const std::strin
 
 void Bot::addWsCallback(ix::WebSocketMessageType type, std::function<void(const ix::WebSocketMessagePtr&)> callback)
 {
+    if (running_) throw std::logic_error("cannot add callbacks after launch()");
     callbacks_[type].emplace_back(std::move(callback));
 }
 
 void Bot::addOnMessageCallback(std::function<void(const satori::event::Event&)> callback)
 {
+    if (running_) throw std::logic_error("cannot add callbacks after launch()");
     addWsCallback(ix::WebSocketMessageType::Message, [this, callback = std::move(callback)](const ix::WebSocketMessagePtr& msg)
     {
         try
@@ -56,7 +59,7 @@ void Bot::init()
                 }
                 catch (const std::exception& e)
                 {
-                    std::cerr << "setOnMessageCallback 错误: " << e.what() << std::endl;
+                    reportError(std::string("setOnMessageCallback error: ") + e.what());
                 }
             }
         }
@@ -97,7 +100,7 @@ void Bot::pingLoop()
             ping["op"] = PING;
             if (!wsSend(ping.dump()))
             {
-                std::cerr << "发送 PING 失败" << std::endl;
+                reportError("发送 PING 失败");
             }
         }
     }
@@ -116,7 +119,7 @@ void Bot::identify(const std::string& token)
         if (sn_) identify["body"]["sn"] = sn_.load();
         if (!wsSend(identify.dump()))
         {
-            std::cerr << "发送 IDENTIFY 失败" << std::endl;
+            reportError("发送 IDENTIFY 失败");
         }
     });
     addWsCallback(ix::WebSocketMessageType::Message, [this](const ix::WebSocketMessagePtr& msg)
@@ -134,12 +137,12 @@ void Bot::setupErrorHandlers()
 {
     addWsCallback(ix::WebSocketMessageType::Error, [this](const ix::WebSocketMessagePtr& msg)
     {
-        std::cerr << "WebSocket 错误: " << msg->errorInfo.reason << std::endl;
+        reportError("WebSocket error: " + msg->errorInfo.reason);
     });
 
     addWsCallback(ix::WebSocketMessageType::Close, [this](const ix::WebSocketMessagePtr& msg)
     {
-        std::cerr << "WebSocket 连接关闭: " << msg->closeInfo.code << " - " << msg->closeInfo.reason << std::endl;
+        reportError("WebSocket closed: " + std::to_string(msg->closeInfo.code) + " - " + msg->closeInfo.reason);
     });
 }
 

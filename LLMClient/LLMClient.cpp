@@ -151,7 +151,10 @@ void LLMClient::workerThread()
         }
         catch (const std::exception& e)
         {
-            throw std::runtime_error(std::string("LLM 响应解析错误: ") + e.what());
+            req.callback(ChatResult{
+                ChatResult::FinishReason::Error, std::nullopt, std::nullopt,
+                std::string("LLM 响应解析错误: ") + e.what()
+            });
         }
     }
 }

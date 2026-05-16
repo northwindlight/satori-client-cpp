@@ -20,7 +20,7 @@ std::vector<satori::event::Message> MessageApi::create(const std::string& channe
     }
     catch (const std::exception& e)
     {
-        throw std::runtime_error(std::string("MessageApi::create 错误: ") + e.what());
+        throw std::runtime_error(std::string("MessageApi::create error: ") + e.what());
     }
 }
 
@@ -40,7 +40,7 @@ satori::event::Message MessageApi::get(const std::string& channel_id, const std:
     }
     catch (const std::exception& e)
     {
-        throw std::runtime_error(std::string("MessageApi::get 错误: ") + e.what());
+        throw std::runtime_error(std::string("MessageApi::get error: ") + e.what());
     }
 }
 
@@ -55,7 +55,7 @@ void MessageApi::delete_(const std::string& channel_id, const std::string& messa
     }
     catch (const std::exception& e)
     {
-        throw std::runtime_error(std::string("MessageApi::delete_ 错误: ") + e.what());
+        throw std::runtime_error(std::string("MessageApi::delete_ error: ") + e.what());
     }
 }
 

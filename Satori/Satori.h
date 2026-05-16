@@ -201,6 +201,7 @@ namespace satori {
 
         struct Quote {
             std::optional<std::string> id;
+            std::string content; // plaintext of quoted message preview
         };
 
         struct Author {

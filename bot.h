@@ -2,6 +2,7 @@
 
 #include <ixwebsocket/IXHttpClient.h>
 #include <ixwebsocket/IXWebSocket.h>
+#include <iostream>
 #include "api/MessageApi.h"
 #include "api/ChannelApi.h"
 #include "api/UserApi.h"
@@ -27,12 +28,17 @@ private:
     std::string userId_;
     std::string platform_;
     std::unordered_map<ix::WebSocketMessageType, std::vector<std::function<void(const ix::WebSocketMessagePtr&)>>> callbacks_;
+    std::function<void(const std::string&)> errorCallback_;
     std::atomic<bool> running_ = false;
     std::atomic<int> sn_ = 0;
     std::jthread pingThread_;
     void init();
     void pingLoop();
     void setupErrorHandlers();
+    void reportError(const std::string& msg) {
+        std::cerr << msg << std::endl;
+        if (errorCallback_) errorCallback_(msg);
+    }
 
 public:
     enum Opcode
@@ -46,6 +52,7 @@ public:
     Bot(const std::string& baseAddr, const std::string& token, const std::string& platform, const std::string& userId);
     void addWsCallback(ix::WebSocketMessageType, std::function<void(const ix::WebSocketMessagePtr&)> callback);
     void addOnMessageCallback(std::function<void(const satori::event::Event&)> callback);
+    void setErrorCallback(std::function<void(const std::string&)> callback) { errorCallback_ = std::move(callback); }
     std::string baseUrl() const { return "http://" + baseAddr_ + "/v1"; }
     std::string httpGet(const std::string& url);
     std::string httpPost(const std::string& url, const std::string& body);
